@@ -15,7 +15,9 @@ class Singleton
     // to prevent initiation with outer code.
     private function __construct(string $groupId)
     {
-        if (empty($groupId)) return;
+        if (empty($groupId)) {
+            return;
+        }
         $this->_groupId = $groupId;
         echo 'instantiating productinfo for '. $groupId .'<p>';
     }
@@ -32,7 +34,6 @@ class Singleton
         }
         
         return self::$instance[$class][$groupId];
-
     }
 
     public static function getAll()
@@ -79,14 +80,13 @@ class DI implements \ArrayAccess
     public function getInstance($groupId)
     {
         $key = 'product_'. $groupId;
-        if (!array_key_exists($key, $this->container))
-        {
-            $this->container['product_'.$groupId] = function () use ($groupId) {
+        if (!$this->offsetExists($key)) {
+            $this->offsetSet($key, function () use ($groupId) {
                 return new productInfo($groupId);
-            };
+            });
         }
         
-        return $this->container['product_'. $groupId];
+        return $this->offsetGet($key);
     }
 
     /**
@@ -97,7 +97,8 @@ class DI implements \ArrayAccess
      * @access public
      * @abstracting ArrayAccess
      */
-    public function offsetSet($offset,$value) {
+    public function offsetSet($offset, $value)
+    {
         if (is_null($offset)) {
             $this->data[] = $value;
         } else {
@@ -113,7 +114,8 @@ class DI implements \ArrayAccess
      * @return boolean
      * @abstracting ArrayAccess
      */
-    public function offsetExists($offset) {
+    public function offsetExists($offset)
+    {
         return isset($this->data[$offset]);
     }
 
@@ -124,7 +126,8 @@ class DI implements \ArrayAccess
      * @access public
      * @abstracting ArrayAccess
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset)
+    {
         if ($this->offsetExists($offset)) {
             unset($this->data[$offset]);
         }
@@ -138,10 +141,10 @@ class DI implements \ArrayAccess
      * @return mixed
      * @abstracting ArrayAccess
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset)
+    {
         return $this->offsetExists($offset) ? $this->data[$offset] : null;
     }
-
 }
 
 echo '<h3>The classes are being lazy loaded <p>Only when a class is called effectively it gets loaded and makes it available </h3>';
@@ -160,4 +163,5 @@ echo '<h3>Note, The instances are the same and no singleton is necessary</h3>';
 var_dump($DI->getInstance(999));
 var_dump($DI->getInstance(999));
 
- echo 'Are instances equal and the same ? <b>'; var_dump ($DI->getInstance(999) === $DI->getInstance(999));
+ echo 'Are instances equal and the same ? <b>';
+var_dump($DI->getInstance(999) === $DI->getInstance(999));

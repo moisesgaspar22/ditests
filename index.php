@@ -79,7 +79,7 @@ class DI implements \ArrayAccess
 
     public function getInstance($groupId)
     {
-        $key = 'product_'. $groupId;
+        $key = $groupId;
         if (!$this->offsetExists($key)) {
             $this->offsetSet($key, function () use ($groupId) {
                 return new productInfo($groupId);

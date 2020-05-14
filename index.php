@@ -144,7 +144,7 @@ class DI implements \ArrayAccess
 
 }
 
-echo '<h3>The classes are being lasy loaded <p>Only when a class is called effectively it gets loaded and makes it available </h3>';
+echo '<h3>The classes are being lazy loaded <p>Only when a class is called effectively it gets loaded and makes it available </h3>';
 
 $DI = new \DI();
 
